@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">AccentFlow</string>
+
+    <!-- Facebook App ID -->
+    <string name="facebook_app_id">TON_FACEBOOK_APP_ID</string>
+    <string name="fb_login_protocol_scheme">fbTON_FACEBOOK_APP_ID</string>
+</resources>
