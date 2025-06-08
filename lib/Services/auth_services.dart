@@ -39,7 +39,12 @@ class AuthServices {
 
   // Déconnexion
   static Future<void> logout() async {
-    await _auth.signOut();
+    try {
+      await _auth.signOut();
+    } catch (e) {
+      print("Erreur lors de la déconnexion: $e");
+      rethrow; // Propager l'erreur pour la gérer dans l'appelant
+    }
   }
 
   // Récupérer l'utilisateur actuel

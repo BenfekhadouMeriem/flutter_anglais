@@ -30,7 +30,7 @@ class AboutScreen extends StatelessWidget {
                   top: 70,
                   left: constraints.maxWidth / 2 - 40,
                   child: const Text(
-                    "Tutorial",
+                    "About Us",
                     style: TextStyle(
                       fontSize: 41,
                       fontWeight: FontWeight.bold,

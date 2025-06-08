@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:ui';
 
-import 'about_screen.dart';
+import 'about_y_screen.dart';
 
 class YoungExplorersPage extends StatelessWidget {
   const YoungExplorersPage({Key? key}) : super(key: key);
@@ -9,122 +9,156 @@ class YoungExplorersPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
-        children: [
-          CustomPaint(
-            size: MediaQuery.of(context).size,
-            painter: WavePainter(),
-          ),
-          // Affichage des boutons
-          _buildSquareButtons(context),
-          // Logo
-          Positioned(
-            top: 70,
-            left: 20,
-            child: _buildLogo(),
-          ),
-          // Affichage du titre "Catégorie"
-          Positioned(
-            top: 100,
-            left: MediaQuery.of(context).size.width / 2 - 40,
-            child: Column(
-              children: const [
-                Text(
-                  "Tutorial",
-                  style: TextStyle(
-                    fontSize: 41,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
+      body: SafeArea(
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            return Stack(
+              children: [
+                CustomPaint(
+                  size: Size(constraints.maxWidth, constraints.maxHeight),
+                  painter: WavePainter(),
+                ),
+                Positioned.fill(
+                  child: _buildSquareButtons(context, constraints),
+                ),
+                Positioned(
+                  top: 40,
+                  left: 20,
+                  child: _buildLogo(),
+                ),
+                Positioned(
+                  top: 70,
+                  left: constraints.maxWidth / 2 - 40,
+                  child: const Text(
+                    "Tutorial",
+                    style: TextStyle(
+                      fontSize: 41,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
                   ),
                 ),
               ],
-            ),
-          ),
-        ],
+            );
+          },
+        ),
       ),
     );
   }
 
-  Widget _buildSquareButtons(BuildContext context) {
-    // Ajout du paramètre
-    return Center(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const SizedBox(height: 200),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: Text(
-              "Tutorial",
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-                color: Colors.black,
-                decoration: TextDecoration.underline,
-                decorationColor: const Color.fromARGB(255, 241, 107, 151),
-              ),
-            ),
-          ),
-          const SizedBox(height: 20),
-          _buildButtonRow(
-            labels: ['Podcast', 'Choose'],
-            assets: ['assets/podcast.jpg', 'assets/chose.jpg'],
-          ),
-          const SizedBox(height: 20),
-          _buildButtonRow(
-            labels: ['Recording', 'Audio'],
-            assets: ['assets/recording.jpg', 'assets/audio.jpg'],
-          ),
-          const SizedBox(height: 20),
-          _buildButtonRow(
-            labels: ['Video', 'Amy'],
-            assets: ['assets/video.jpg', 'assets/amy.jpg'],
-          ),
-          const SizedBox(height: 30),
-          Center(
-            child: GestureDetector(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => AboutScreen(),
+  Widget _buildSquareButtons(BuildContext context, BoxConstraints constraints) {
+    return SingleChildScrollView(
+      physics: const BouncingScrollPhysics(),
+      child: Center(
+        child: Padding(
+          padding:
+              EdgeInsets.symmetric(horizontal: constraints.maxWidth * 0.04),
+          child: OrientationBuilder(
+            builder: (context, orientation) {
+              return Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(height: constraints.maxHeight * 0.25),
+                  Padding(
+                    padding: EdgeInsets.symmetric(
+                        horizontal: constraints.maxWidth * 0.04),
+                    child: Text(
+                      "Tutorial",
+                      style: TextStyle(
+                        fontSize: constraints.maxWidth * 0.06,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                        decoration: TextDecoration.underline,
+                        decorationColor:
+                            const Color.fromARGB(255, 241, 107, 151),
+                      ),
+                    ),
                   ),
-                );
-              },
-              child: Text(
-                'Skip',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.pink,
-                ),
-              ),
-            ),
+                  SizedBox(height: constraints.maxHeight * 0.03),
+                  _buildButtonRow(
+                    labels: ['Podcast', 'Choose'],
+                    assets: ['assets/podcast.jpg', 'assets/chose.jpg'],
+                    constraints: constraints,
+                    isPortrait: orientation == Orientation.portrait,
+                  ),
+                  SizedBox(height: constraints.maxHeight * 0.03),
+                  _buildButtonRow(
+                    labels: ['Recording', 'Audio'],
+                    assets: ['assets/recording.jpg', 'assets/audio.jpg'],
+                    constraints: constraints,
+                    isPortrait: orientation == Orientation.portrait,
+                  ),
+                  SizedBox(height: constraints.maxHeight * 0.03),
+                  _buildButtonRow(
+                    labels: ['Video', 'Amy'],
+                    assets: ['assets/video.jpg', 'assets/amy.jpg'],
+                    constraints: constraints,
+                    isPortrait: orientation == Orientation.portrait,
+                  ),
+                  SizedBox(height: constraints.maxHeight * 0.03),
+                  Center(
+                    child: GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => AboutYScreen(),
+                          ),
+                        );
+                      },
+                      child: Text(
+                        'Skip',
+                        style: TextStyle(
+                          fontSize: constraints.maxWidth * 0.04,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.pink,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              );
+            },
           ),
-        ],
+        ),
       ),
     );
   }
 
-// Méthode pour construire chaque ligne de boutons
-  Widget _buildButtonRow(
-      {required List<String> labels, required List<String> assets}) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center, // Les boutons seront centrés
-      children: [
-        for (int i = 0; i < labels.length; i++) ...[
-          _buildButtonWithLabel(labels[i], assets[i]),
-          if (i < labels.length - 1)
-            const SizedBox(
-                width: 20), // Ajout d'un espacement entre les boutons
-        ],
-      ],
-    );
+  Widget _buildButtonRow({
+    required List<String> labels,
+    required List<String> assets,
+    required BoxConstraints constraints,
+    required bool isPortrait,
+  }) {
+    final buttonSize = constraints.maxWidth * 0.35;
+    return isPortrait
+        ? Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: List.generate(
+              labels.length,
+              (i) => Padding(
+                padding: EdgeInsets.symmetric(
+                    horizontal: constraints.maxWidth * 0.03),
+                child: _buildButtonWithLabel(labels[i], assets[i], buttonSize),
+              ),
+            ),
+          )
+        : Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: List.generate(
+              labels.length,
+              (i) => Padding(
+                padding: EdgeInsets.symmetric(
+                    vertical: constraints.maxHeight * 0.01),
+                child: _buildButtonWithLabel(labels[i], assets[i], buttonSize),
+              ),
+            ),
+          );
   }
 
-// Méthode pour créer chaque bouton avec label et image floue
-  Widget _buildButtonWithLabel(String label, String assetPath) {
+  Widget _buildButtonWithLabel(String label, String assetPath, double size) {
     return Column(
       children: [
         GestureDetector(
@@ -134,17 +168,21 @@ class YoungExplorersPage extends StatelessWidget {
             child: Stack(
               alignment: Alignment.center,
               children: [
-                Image.asset(assetPath,
-                    width: 150, height: 150, fit: BoxFit.cover),
+                Image.asset(
+                  assetPath,
+                  width: size,
+                  height: size,
+                  fit: BoxFit.cover,
+                ),
                 Container(
-                  width: 150,
-                  height: 150,
+                  width: size,
+                  height: size,
                   color: Colors.black.withOpacity(0.3),
                 ),
                 Text(
                   label,
-                  style: const TextStyle(
-                    fontSize: 16,
+                  style: TextStyle(
+                    fontSize: size * 0.1,
                     fontWeight: FontWeight.bold,
                     color: Colors.white,
                   ),
@@ -153,30 +191,8 @@ class YoungExplorersPage extends StatelessWidget {
             ),
           ),
         ),
-        const SizedBox(height: 5),
+        SizedBox(height: size * 0.05),
       ],
-    );
-  }
-
-  Widget _buildSquareButton(String imagePath) {
-    return Container(
-      width: 120,
-      height: 120,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.2),
-            blurRadius: 5,
-            offset: const Offset(0, 3),
-          ),
-        ],
-      ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(12),
-        child: Image.asset(imagePath, fit: BoxFit.cover),
-      ),
     );
   }
 
@@ -218,38 +234,35 @@ class YoungExplorersPage extends StatelessWidget {
   Widget _buildVerticalBar(double offsetX, double topHeight,
       double bottomHeight, Color topColor, Color bottomColor, bool isAttached) {
     return Positioned(
-      left: 57 + offsetX, // Position horizontale de la barre
+      left: 57 + offsetX,
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center, // Centrer la colonne
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          // Partie supérieure de la barre
           Container(
             width: 10,
-            height: topHeight, // Hauteur de la barre supérieure
+            height: topHeight,
             decoration: BoxDecoration(
-              color: topColor, // Couleur de la barre
-              borderRadius: BorderRadius.circular(5), // Coins arrondis
+              color: topColor,
+              borderRadius: BorderRadius.circular(5),
             ),
           ),
-          // Partie inférieure de la barre (si attachée)
           isAttached
               ? Container(
                   width: 10,
-                  height: bottomHeight, // Hauteur de la barre inférieure
+                  height: bottomHeight,
                   decoration: BoxDecoration(
-                    color: bottomColor, // Couleur de la barre inférieure
-                    borderRadius: BorderRadius.circular(5), // Coins arrondis
+                    color: bottomColor,
+                    borderRadius: BorderRadius.circular(5),
                   ),
                 )
-              : SizedBox(height: 5), // Espacement si non attachée
-          // Partie inférieure de la barre (si non attachée)
+              : SizedBox(height: 5),
           if (!isAttached)
             Container(
               width: 10,
-              height: bottomHeight, // Hauteur de la barre inférieure
+              height: bottomHeight,
               decoration: BoxDecoration(
-                color: bottomColor, // Couleur de la barre inférieure
-                borderRadius: BorderRadius.circular(5), // Coins arrondis
+                color: bottomColor,
+                borderRadius: BorderRadius.circular(5),
               ),
             ),
         ],
@@ -261,34 +274,28 @@ class YoungExplorersPage extends StatelessWidget {
 class WavePainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
-    // Peinture pour la vague rose
     Paint pinkPaint = Paint()
       ..shader = LinearGradient(
         colors: [
           Colors.pink.shade300,
           Colors.pink.shade200,
-          Colors.pink.shade100,
+          Colors.pink.shade100
         ],
         begin: Alignment.topLeft,
         end: Alignment.bottomRight,
       ).createShader(Rect.fromLTWH(0, 0, size.width, size.height))
       ..style = PaintingStyle.fill;
 
-    // Peinture pour la vague violette
     Paint purplePaint = Paint()
       ..shader = LinearGradient(
-        colors: [
-          Colors.purple.shade200,
-          Colors.purple.shade100,
-        ],
+        colors: [Colors.purple.shade200, Colors.purple.shade100],
         begin: Alignment.topLeft,
         end: Alignment.bottomRight,
       ).createShader(Rect.fromLTWH(0, 0, size.width, size.height))
       ..style = PaintingStyle.fill;
 
-    // Vague rose (un peu plus descendue)
     Path pinkPath = Path();
-    pinkPath.moveTo(0, size.height * 0.25); // Descente un peu plus profonde
+    pinkPath.moveTo(0, size.height * 0.25);
     pinkPath.quadraticBezierTo(size.width * 0.2, size.height * 0.2,
         size.width * 0.5, size.height * 0.24);
     pinkPath.quadraticBezierTo(
@@ -297,10 +304,9 @@ class WavePainter extends CustomPainter {
     pinkPath.lineTo(0, 0);
     pinkPath.close();
 
-    // Vague violette (un peu plus descendue)
     Path purplePath = Path();
-    purplePath.moveTo(0, size.height * 0.25); // Descente un peu plus profonde
-    purplePath.quadraticBezierTo(size.width * 0, size.height * 0.2,
+    purplePath.moveTo(0, size.height * 0.25);
+    purplePath.quadraticBezierTo(size.width * 0.0, size.height * 0.2,
         size.width * 0.4, size.height * 0.25);
     purplePath.quadraticBezierTo(
         size.width * 0.85, size.height * 0.3, size.width, size.height * 0.2);
@@ -308,13 +314,10 @@ class WavePainter extends CustomPainter {
     purplePath.lineTo(0, 0);
     purplePath.close();
 
-    // Dessiner les vagues
-    canvas.drawPath(purplePath, purplePaint); // Vague violette
-    canvas.drawPath(pinkPath, pinkPaint); // Vague rose
+    canvas.drawPath(purplePath, purplePaint);
+    canvas.drawPath(pinkPath, pinkPaint);
   }
 
   @override
-  bool shouldRepaint(CustomPainter oldDelegate) {
-    return true;
-  }
+  bool shouldRepaint(CustomPainter oldDelegate) => false;
 }

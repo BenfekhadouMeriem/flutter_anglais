@@ -45,7 +45,7 @@ class _HomeScreenState extends State<HomeScreen>
       });
     });
 
-    Future.delayed(const Duration(seconds: 3), () {
+    Future.delayed(const Duration(seconds: 2), () {
       setState(() {
         _showCategories = true;
       });
