@@ -1,68 +1,10 @@
 import 'package:flutter/material.dart';
 
-import 'young_screen.dart' as young_screen;
-import 'advanced_screen.dart' as advances_screen;
+import 'main_screen.dart';
+import 'main_y_screen.dart';
 
-class HomeScreen extends StatefulWidget {
+class HomeScreen extends StatelessWidget {
   const HomeScreen({Key? key}) : super(key: key);
-
-  @override
-  _HomeScreenState createState() => _HomeScreenState();
-}
-
-class _HomeScreenState extends State<HomeScreen>
-    with SingleTickerProviderStateMixin {
-  bool _showLogo = false;
-  bool _showCategories = false;
-  bool _showLoginFields = false;
-
-  late AnimationController _animationController;
-  late Animation<double> _waveAnimation;
-  late Animation<double> _logoAnimation;
-
-  @override
-  void initState() {
-    super.initState();
-
-    _animationController = AnimationController(
-      vsync: this,
-      duration: const Duration(seconds: 2),
-    );
-    _waveAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
-    );
-    _logoAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
-    );
-
-    Future.delayed(const Duration(seconds: 1), () {
-      _animationController.forward();
-    });
-
-    Future.delayed(const Duration(milliseconds: 300), () {
-      setState(() {
-        _showLogo = true;
-      });
-    });
-
-    Future.delayed(const Duration(seconds: 2), () {
-      setState(() {
-        _showCategories = true;
-      });
-    });
-
-    Future.delayed(const Duration(seconds: 3), () {
-      setState(() {
-        _showLoginFields = true;
-      });
-    });
-  }
-
-  @override
-  void dispose() {
-    _animationController.dispose();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -70,61 +12,38 @@ class _HomeScreenState extends State<HomeScreen>
       body: SafeArea(
         child: LayoutBuilder(
           builder: (context, constraints) {
-            return TweenAnimationBuilder(
-              tween: Tween<double>(begin: 0.45, end: 0.0),
-              duration: const Duration(seconds: 2),
-              onEnd: () {
-                setState(() {
-                  _showLoginFields = true;
-                });
-              },
-              builder: (context, double waveHeight, child) {
-                return Stack(
-                  children: [
-                    TweenAnimationBuilder(
-                      tween: Tween<double>(begin: 0.0, end: 0.0),
-                      duration: const Duration(seconds: 2),
-                      builder: (context, double waveOffset, child) {
-                        return CustomPaint(
-                          size:
-                              Size(constraints.maxWidth, constraints.maxHeight),
-                          painter: WavePainter(
-                            waveHeight: waveHeight,
-                            waveOffset: waveOffset,
-                          ),
-                        );
-                      },
-                    ),
-                    if (_showLoginFields)
-                      _buildSquareButtons(context, constraints),
-                    AnimatedPositioned(
-                      duration: const Duration(seconds: 2),
-                      top: 40,
-                      left: _showLogo
-                          ? 20
-                          : MediaQuery.of(context).size.width / 2 - 60,
-                      child: _buildLogo(),
-                    ),
-                    if (_showCategories)
-                      Positioned(
-                        top: 70,
-                        left: MediaQuery.of(context).size.width / 2 - 40,
-                        child: Column(
-                          children: [
-                            Text(
-                              "Category",
-                              style: TextStyle(
-                                fontSize: 41,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white,
-                              ),
-                            ),
-                          ],
+            return Stack(
+              children: [
+                CustomPaint(
+                  size: Size(constraints.maxWidth, constraints.maxHeight),
+                  painter: WavePainter(
+                    waveHeight: 0.0,
+                    waveOffset: 0.0,
+                  ),
+                ),
+                _buildSquareButtons(context, constraints),
+                Positioned(
+                  top: 40,
+                  left: 20,
+                  child: _buildLogo(),
+                ),
+                Positioned(
+                  top: 70,
+                  left: MediaQuery.of(context).size.width / 2 - 40,
+                  child: Column(
+                    children: [
+                      Text(
+                        "Category",
+                        style: TextStyle(
+                          fontSize: 41,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
                         ),
                       ),
-                  ],
-                );
-              },
+                    ],
+                  ),
+                ),
+              ],
             );
           },
         ),
@@ -298,7 +217,7 @@ class _HomeScreenState extends State<HomeScreen>
                                         context,
                                         MaterialPageRoute(
                                           builder: (context) =>
-                                              young_screen.YoungExplorersPage(),
+                                              MainYScreen(),
                                         ),
                                       );
                                     },
@@ -326,8 +245,7 @@ class _HomeScreenState extends State<HomeScreen>
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
-                                          builder: (context) => advances_screen
-                                              .AdvancedLearnersPage(),
+                                          builder: (context) =>MainScreen(),
                                         ),
                                       );
                                     },
@@ -361,8 +279,7 @@ class _HomeScreenState extends State<HomeScreen>
                                         Navigator.push(
                                           context,
                                           MaterialPageRoute(
-                                            builder: (context) => young_screen
-                                                .YoungExplorersPage(),
+                                            builder: (context) =>MainYScreen(),
                                           ),
                                         );
                                       },
@@ -388,9 +305,7 @@ class _HomeScreenState extends State<HomeScreen>
                                         Navigator.push(
                                           context,
                                           MaterialPageRoute(
-                                            builder: (context) =>
-                                                advances_screen
-                                                    .AdvancedLearnersPage(),
+                                            builder: (context) =>MainScreen(),
                                           ),
                                         );
                                       },
@@ -512,7 +427,5 @@ class WavePainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(CustomPainter oldDelegate) {
-    return true;
-  }
+  bool shouldRepaint(CustomPainter oldDelegate) => false;
 }

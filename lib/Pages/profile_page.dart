@@ -323,11 +323,11 @@ class _ProfilePageState extends State<ProfilePage>
                                       color: Colors.pink.shade300,
                                       shape: BoxShape.circle,
                                     ),
-                                    child: const Icon(
+                                    /*child: const Icon(
                                       Icons.camera_alt,
                                       size: 20,
                                       color: Colors.white,
-                                    ),
+                                    ),*/
                                   ),
                                 ),
                               ],
@@ -401,7 +401,7 @@ class _ProfilePageState extends State<ProfilePage>
                                     ),
                                     const SizedBox(height: 20),
                                     // Edit Profile Buttons
-                                    Row(
+                                    /*Row(
                                       mainAxisAlignment:
                                           MainAxisAlignment.center,
                                       children: [
@@ -465,7 +465,7 @@ class _ProfilePageState extends State<ProfilePage>
                                         ],
                                       ],
                                     ),
-                                    const SizedBox(height: 20),
+                                    */const SizedBox(height: 20),
                                     // Notification Toggle
                                     Row(
                                       mainAxisAlignment:

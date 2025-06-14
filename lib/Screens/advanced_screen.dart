@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'dart:ui';
-
-import 'about_screen.dart';
+import 'package:video_player/video_player.dart';
+import 'home_screen.dart';
 
 class AdvancedLearnersPage extends StatelessWidget {
   const AdvancedLearnersPage({Key? key}) : super(key: key);
@@ -70,31 +69,36 @@ class AdvancedLearnersPage extends StatelessWidget {
                         fontWeight: FontWeight.bold,
                         color: Colors.black,
                         decoration: TextDecoration.underline,
-                        decorationColor:
-                            const Color.fromARGB(255, 241, 107, 151),
+                        decorationColor: const Color.fromARGB(255, 241, 107, 151),
                       ),
                     ),
                   ),
                   SizedBox(height: constraints.maxHeight * 0.03),
                   _buildButtonRow(
                     labels: ['Podcast', 'Choose'],
-                    assets: ['assets/podcast.jpg', 'assets/chose.jpg'],
+                    imageAssets: ['assets/podcast.jpg', 'assets/chose.jpg'],
+                    videoAssets: ['assets/videos/podcast.mp4', 'assets/videos/choose.mp4'],
                     constraints: constraints,
                     isPortrait: orientation == Orientation.portrait,
+                    context: context,
                   ),
                   SizedBox(height: constraints.maxHeight * 0.03),
                   _buildButtonRow(
                     labels: ['Recording', 'Audio'],
-                    assets: ['assets/recording.jpg', 'assets/audio.jpg'],
+                    imageAssets: ['assets/recording.jpg', 'assets/audio.jpg'],
+                    videoAssets: ['assets/videos/recording.mp4', 'assets/videos/audio.mp4'],
                     constraints: constraints,
                     isPortrait: orientation == Orientation.portrait,
+                    context: context,
                   ),
                   SizedBox(height: constraints.maxHeight * 0.03),
                   _buildButtonRow(
-                    labels: ['Video', 'Amy'],
-                    assets: ['assets/video.jpg', 'assets/amy.jpg'],
+                    labels: ['Games', 'Amy'],
+                    imageAssets: ['assets/games.jpg', 'assets/amy.jpg'],
+                    videoAssets: ['assets/videos/games.mp4', 'assets/videos/amy.mp4'],
                     constraints: constraints,
                     isPortrait: orientation == Orientation.portrait,
+                    context: context,
                   ),
                   SizedBox(height: constraints.maxHeight * 0.03),
                   Center(
@@ -103,7 +107,7 @@ class AdvancedLearnersPage extends StatelessWidget {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => AboutScreen(),
+                            builder: (context) => HomeScreen(),
                           ),
                         );
                       },
@@ -128,9 +132,11 @@ class AdvancedLearnersPage extends StatelessWidget {
 
   Widget _buildButtonRow({
     required List<String> labels,
-    required List<String> assets,
+    required List<String> imageAssets,
+    required List<String> videoAssets,
     required BoxConstraints constraints,
     required bool isPortrait,
+    required BuildContext context,
   }) {
     final buttonSize = constraints.maxWidth * 0.35;
     return isPortrait
@@ -141,7 +147,13 @@ class AdvancedLearnersPage extends StatelessWidget {
               (i) => Padding(
                 padding: EdgeInsets.symmetric(
                     horizontal: constraints.maxWidth * 0.03),
-                child: _buildButtonWithLabel(labels[i], assets[i], buttonSize),
+                child: _buildButtonWithLabel(
+                  labels[i],
+                  imageAssets[i],
+                  videoAssets[i],
+                  buttonSize,
+                  context,
+                ),
               ),
             ),
           )
@@ -152,27 +164,52 @@ class AdvancedLearnersPage extends StatelessWidget {
               (i) => Padding(
                 padding: EdgeInsets.symmetric(
                     vertical: constraints.maxHeight * 0.01),
-                child: _buildButtonWithLabel(labels[i], assets[i], buttonSize),
+                child: _buildButtonWithLabel(
+                  labels[i],
+                  imageAssets[i],
+                  videoAssets[i],
+                  buttonSize,
+                  context,
+                ),
               ),
             ),
           );
   }
 
-  Widget _buildButtonWithLabel(String label, String assetPath, double size) {
+  Widget _buildButtonWithLabel(
+    String label,
+    String imagePath,
+    String videoPath,
+    double size,
+    BuildContext context,
+  ) {
     return Column(
       children: [
         GestureDetector(
-          onTap: () {},
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => VideoPlayerPage(videoPath: videoPath),
+              ),
+            );
+          },
           child: ClipRRect(
             borderRadius: BorderRadius.circular(10),
             child: Stack(
               alignment: Alignment.center,
               children: [
                 Image.asset(
-                  assetPath,
+                  imagePath,
                   width: size,
                   height: size,
                   fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) => Container(
+                    width: size,
+                    height: size,
+                    color: Colors.grey,
+                    child: const Center(child: Icon(Icons.error)),
+                  ),
                 ),
                 Container(
                   width: size,
@@ -265,6 +302,107 @@ class AdvancedLearnersPage extends StatelessWidget {
                 borderRadius: BorderRadius.circular(5),
               ),
             ),
+        ],
+      ),
+    );
+  }
+}
+
+class VideoPlayerPage extends StatefulWidget {
+  final String videoPath;
+
+  const VideoPlayerPage({Key? key, required this.videoPath}) : super(key: key);
+
+  @override
+  _VideoPlayerPageState createState() => _VideoPlayerPageState();
+}
+
+class _VideoPlayerPageState extends State<VideoPlayerPage> {
+  late VideoPlayerController _controller;
+  bool _isError = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = VideoPlayerController.asset(widget.videoPath)
+      ..initialize().then((_) {
+        setState(() {
+          _controller.play();
+        });
+      }).catchError((error) {
+        setState(() {
+          _isError = true;
+        });
+      });
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.black,
+      appBar: AppBar(
+        backgroundColor: Colors.black,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () => Navigator.pop(context),
+        ),
+      ),
+      body: Center(
+        child: _isError
+            ? const Text(
+                'Erreur lors du chargement de la vidéo',
+                style: TextStyle(color: Colors.white, fontSize: 18),
+              )
+            : _controller.value.isInitialized
+                ? AspectRatio(
+                    aspectRatio: _controller.value.aspectRatio,
+                    child: Stack(
+                      alignment: Alignment.bottomCenter,
+                      children: [
+                        VideoPlayer(_controller),
+                        _VideoControls(controller: _controller),
+                      ],
+                    ),
+                  )
+                : const CircularProgressIndicator(color: Colors.white),
+      ),
+    );
+  }
+}
+
+class _VideoControls extends StatelessWidget {
+  final VideoPlayerController controller;
+
+  const _VideoControls({Key? key, required this.controller}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      color: Colors.black54,
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          IconButton(
+            onPressed: () {
+              if (controller.value.isPlaying) {
+                controller.pause();
+              } else {
+                controller.play();
+              }
+            },
+            icon: Icon(
+              controller.value.isPlaying ? Icons.pause : Icons.play_arrow ,         
+              color: Colors.white,
+              size: 30,
+            ),
+          ),
         ],
       ),
     );

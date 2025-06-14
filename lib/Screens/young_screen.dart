@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:ui';
 
-import 'about_y_screen.dart';
+import 'main_y_screen.dart';
 
 class YoungExplorersPage extends StatelessWidget {
   const YoungExplorersPage({Key? key}) : super(key: key);
@@ -103,7 +103,7 @@ class YoungExplorersPage extends StatelessWidget {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => AboutYScreen(),
+                            builder: (context) => MainYScreen(),
                           ),
                         );
                       },

@@ -31,6 +31,10 @@
 	<key>NSMicrophoneUsageDescription</key>
 	<string>Nous avons besoin d'accéder au microphone pour la reconnaissance vocale.</string>
 	<key>UISupportedInterfaceOrientations</key>
+	<key>NSCameraUsageDescription</key>
+	<string>Camera access is required for pronunciation practice.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Microphone access is required for speech recognition.</string>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
 		<string>UIInterfaceOrientationLandscapeLeft</string>
